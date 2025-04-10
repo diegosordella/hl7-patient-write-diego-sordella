@@ -55,22 +55,20 @@ document.getElementById('patientForm').addEventListener('submit', function(event
         body: JSON.stringify(patient)
     })
     .then(async response => {
-        const contentType = response.headers.get('content-type');
+        const text = await response.text();
+        console.log("🧾 Respuesta cruda del servidor:", text);
     
-        if (!response.ok) {
-            const errorText = contentType && contentType.includes('application/json')
-                ? JSON.stringify(await response.json())
-                : await response.text();
-    
-            throw new Error(`Error ${response.status}: ${errorText}`);
+        // Intentar parsear solo si hay contenido
+        if (text) {
+            const data = JSON.parse(text);
+            console.log('✅ Success:', data);
+            alert('Paciente creado exitosamente!');
+        } else {
+            throw new Error("El servidor no devolvió contenido.");
         }
-    
-        const data = await response.json();
-        console.log('Success:', data);
-        alert('Paciente creado exitosamente!');
     })
     .catch((error) => {
-        console.error('Error:', error.message);
-        alert('Error al crear el paciente: ' + error.message);
+        console.error('❌ Error:', error);
+        alert('Error al crear el paciente. ' + error.message);
     });
 });
