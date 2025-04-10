@@ -47,7 +47,7 @@ document.getElementById('patientForm').addEventListener('submit', function(event
     };
 
     // Enviar los datos usando Fetch API
-    fetch('https://hl7-patient-write-diego-sordella-nmdb.onrender.com', {
+    fetch('https://hl7-patient-write-diego-sordella-srv5.onrender.com', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
