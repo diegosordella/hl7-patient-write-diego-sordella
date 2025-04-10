@@ -55,18 +55,22 @@ document.getElementById('patientForm').addEventListener('submit', function(event
         body: JSON.stringify(patient)
     })
     .then(async response => {
+        const contentType = response.headers.get('content-type');
+    
         if (!response.ok) {
-            const errorText = await response.text();  // para leer posibles mensajes de error
-            throw new Error(`Error del servidor: ${response.status} - ${errorText}`);
+            const errorText = contentType && contentType.includes('application/json')
+                ? JSON.stringify(await response.json())
+                : await response.text();
+    
+            throw new Error(`Error ${response.status}: ${errorText}`);
         }
-        return response.json();
-    })
-    .then(data => {
+    
+        const data = await response.json();
         console.log('Success:', data);
         alert('Paciente creado exitosamente!');
     })
     .catch((error) => {
-        console.error('Error:', error);
-        alert('Error al crear el paciente. ' + error.message);
+        console.error('Error:', error.message);
+        alert('Error al crear el paciente: ' + error.message);
     });
 });
