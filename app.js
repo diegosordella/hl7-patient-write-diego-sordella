@@ -55,11 +55,20 @@ document.getElementById('patientForm').addEventListener('submit', function(event
         },
         body: JSON.stringify(patient)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        alert('Paciente creado exitosamente!');
+    .then(async response => {
+        const text = await response.text(); // Leemos el cuerpo crudo
+        console.log("Respuesta RAW del servidor:", text);
+    
+        try {
+            const data = JSON.parse(text); // Intentamos parsear
+            console.log('✅ Paciente creado:', data);
+            alert('Paciente creado exitosamente!');
+        } catch (error) {
+            console.error('❌ Error al parsear JSON:', error);
+            alert('Error al crear el paciente. El servidor no devolvió JSON válido.');
+        }
     })
+    
     .catch((error) => {
         console.error('Error:', error);
         alert('Hubo un error al crear el paciente.');
